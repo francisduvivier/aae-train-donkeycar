@@ -10,7 +10,7 @@ MARGIN_TOP = 30
 # ============ End of DonkeyCar Config ============ #
 
 # Camera max FPS
-FPS = 40
+FPS = 60
 
 
 # Region Of Interest
