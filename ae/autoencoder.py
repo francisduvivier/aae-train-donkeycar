@@ -221,13 +221,14 @@ def denormalize(x: np.ndarray, mode: str = "rl") -> np.ndarray:
     # Clip to fix numeric imprecision (1e-09 = 0)
     return (255 * np.clip(x, 0, 1)).astype(np.uint8)
 
+
 def trapezoidMask(img):
     mask = np.full_like(img, (255, 255, 255))
 
     height, width, _ = img.shape
     bottom_width = int(width * 0.85)
-    top_width = int(width * 0.75)
-    height_offset = int(height * 0.60)
+    top_width = int(width * 0.70)
+    height_offset = int(height * 0.52)
 
     trapezoid = np.array([[
         (width // 2 - top_width // 2, height_offset),
