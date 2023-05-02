@@ -221,7 +221,8 @@ def denormalize(x: np.ndarray, mode: str = "rl") -> np.ndarray:
     # Clip to fix numeric imprecision (1e-09 = 0)
     return (255 * np.clip(x, 0, 1)).astype(np.uint8)
 
-
+def random_3colors():
+    return tuple(np.random.randint(0, 256, 3).tolist())
 def trapezoidMask(img):
     mask = np.full_like(img, (255, 255, 255))
 
@@ -236,9 +237,11 @@ def trapezoidMask(img):
         (width // 2 + bottom_width // 2, height),
         (width // 2 - bottom_width // 2, height)
     ]], dtype=np.int32)
-
-    cv2.fillPoly(mask, trapezoid, (0, 0, 0))
+    cv2.fillPoly(mask, trapezoid, (0,0,0))
     masked_image = cv2.bitwise_and(img, mask)
+    mask2 = np.full_like(img, (0, 0, 0))
+    cv2.fillPoly(mask2, trapezoid, random_3colors())
+    masked_image = cv2.bitwise_or(masked_image, mask2)
 
     return masked_image
 
@@ -257,11 +260,12 @@ def preprocess_image(image: np.ndarray, convert_to_rgb: bool = False, normalize:
     # Region of interest
     r = ROI
     image = image[int(r[1]) : int(r[1] + r[3]), int(r[0]) : int(r[0] + r[2])]
-    image = trapezoidMask(image)
+
     im = image
     # Hack: resize if needed, better to change conv2d  kernel size / padding
     if ROI[2] != INPUT_DIM[1] or ROI[3] != INPUT_DIM[0]:
         im = cv2.resize(im, (INPUT_DIM[1], INPUT_DIM[0]), interpolation=cv2.INTER_AREA)
+    im = trapezoidMask(im)
     # Convert BGR to RGB
     if convert_to_rgb:
         im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
