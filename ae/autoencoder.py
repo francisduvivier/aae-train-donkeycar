@@ -227,7 +227,7 @@ def trapezoidMask(img):
     height, width, _ = img.shape
     bottom_width = int(width * 0.85)
     top_width = int(width * 0.75)
-    height_offset = int(height * 0.65)
+    height_offset = int(height * 0.60)
 
     trapezoid = np.array([[
         (width // 2 - top_width // 2, height_offset),
